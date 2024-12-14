@@ -1,20 +1,25 @@
 package net.solostudio.huntMaster.utils;
 
+import lombok.Getter;
 import net.solostudio.huntMaster.HuntMaster;
 import net.solostudio.huntMaster.enums.VersionTypes;
 import net.solostudio.huntMaster.versions.VersionSupport;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static net.solostudio.huntMaster.enums.VersionTypes.determineVersion;
 
 public class StartingUtils {
-
+    @Getter
+    public static final Map<Long, String> basicFormatOverrides = new ConcurrentHashMap<>();
     private static final int REQUIRED_VM_VERSION = 17;
 
     public static void initialize() throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
@@ -29,6 +34,20 @@ public class StartingUtils {
         }
     }
 
+    public static void loadBasicFormatOverrides() {
+        ConfigurationSection section = HuntMaster.getInstance().getConfiguration().getSection("formatting.basic");
+
+        if (section == null) return;
+
+        section.getKeys(false).forEach(key -> {
+            try {
+                basicFormatOverrides.put(Long.parseLong(key), section.getString(key));
+            } catch (NumberFormatException exception) {
+                LoggerUtils.error(exception.getMessage());
+            }
+        });
+    }
+
     private static void registerListenersAndCommands() {
         RegisterUtils.registerListeners();
         RegisterUtils.registerCommands();
@@ -40,17 +59,17 @@ public class StartingUtils {
             return;
         }
 
-        if (!checkVersion()) {
-            disablePlugin("### Unsupported server version. Please update your server to a supported version. ###");
-        }
+        if (!checkVersion()) disablePlugin("### Unsupported server version. Please update your server to a supported version. ###");
     }
 
     private static boolean checkVMVersion() {
         int vmVersion = getVMVersion();
+
         if (vmVersion < REQUIRED_VM_VERSION) {
             LoggerUtils.error("### Detected Java version: {}. Required: {} or higher. ###", vmVersion, REQUIRED_VM_VERSION);
             return false;
         }
+
         return true;
     }
 
@@ -81,7 +100,7 @@ public class StartingUtils {
         }
     }
 
-    private static VersionTypes extractVersionFromBukkitString(String bukkitVersion) {
+    private static VersionTypes extractVersionFromBukkitString(@NotNull String bukkitVersion) {
         Pattern versionPattern = Pattern.compile("\\(MC: (\\d{1,2})\\.(\\d{1,2})(?:\\.(\\d{1,2}))?\\)");
         Matcher matcher = versionPattern.matcher(bukkitVersion);
 
@@ -104,15 +123,14 @@ public class StartingUtils {
         if (matcher.find()) {
             try {
                 return Integer.parseInt(matcher.group(1));
-            } catch (NumberFormatException ignored) {
-            }
+            } catch (NumberFormatException ignored) {}
         }
 
         LoggerUtils.error("### Unable to detect Java version from string: {} ###", javaVersion);
         return -1;
     }
 
-    private static void disablePlugin(String errorMessage) {
+    private static void disablePlugin(@NotNull String errorMessage) {
         LoggerUtils.error(errorMessage);
         Bukkit.getPluginManager().disablePlugin(HuntMaster.getInstance());
     }

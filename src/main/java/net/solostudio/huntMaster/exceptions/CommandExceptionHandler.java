@@ -1,6 +1,7 @@
 package net.solostudio.huntMaster.exceptions;
 
 import net.solostudio.huntMaster.HuntMaster;
+import net.solostudio.huntMaster.enums.keys.MessageKeys;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -34,16 +35,6 @@ public final class CommandExceptionHandler {
         BiConsumer<CommandActor, RuntimeException> handler = exceptionHandlers.get(exception.getClass());
 
         if (handler != null) handler.accept(actor, exception);
-        else sendMessage(actor, MessageKeys.UNKNOWN_ERROR.getMessage());
-    }
-
-    public static boolean handleNonTarget(@NotNull CommandSender sender, @NotNull OfflinePlayer target) {
-        if (!HuntMaster.getDatabase().exists(target.getName())) {
-            sender.sendMessage(MessageKeys.TARGET_DOESNT_EXISTS.getMessage());
-            return false;
-        }
-
-        return true;
     }
 
     private static void sendMessage(@NotNull CommandActor actor, @NotNull String message) {

@@ -18,7 +18,7 @@ public class VersionSupport {
         if (version == VersionTypes.UNKNOWN) LoggerUtils.error("### VERSION NOT FOUND! ###");
 
 
-        Class<?> clazz = Class.forName("net.solostudio.huntmaster.versions.nms." + version.name() + ".ServerVersion");
+        Class<?> clazz = Class.forName("net.solostudio.huntMaster.versions.nms." + version.name() + ".ServerVersion");
         versionSupport = (ServerVersionSupport) clazz.getConstructor(Plugin.class).newInstance(HuntMaster.getInstance());
 
         if (!versionSupport.isSupported()) {

@@ -1,7 +1,7 @@
 package net.solostudio.huntMaster.enums;
 
 import lombok.Getter;
-import net.solostudio.vaultcher.utils.LoggerUtils;
+import net.solostudio.huntMaster.utils.LoggerUtils;
 import org.bukkit.Bukkit;
 
 import java.util.regex.Matcher;

@@ -1,6 +1,7 @@
 package net.solostudio.huntMaster.utils;
 
 import net.solostudio.huntMaster.HuntMaster;
+import net.solostudio.huntMaster.commands.CommandHuntMaster;
 import net.solostudio.huntMaster.exceptions.CommandExceptionHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
@@ -39,10 +40,9 @@ public class RegisterUtils {
         LoggerUtils.info("### Registering commands... ###");
 
         BukkitCommandHandler handler = BukkitCommandHandler.create(HuntMaster.getInstance());
-        //handler.register(new CommandVaultcher());
 
+        handler.register(new CommandHuntMaster());
         LoggerUtils.info("### Successfully registered {} command(s). ###", handler.getCommands().size());
-
         LoggerUtils.info("### Registering exception handlers... ###");
         handler.registerExceptionHandler(SenderNotPlayerException.class, CommandExceptionHandler::handleException);
         handler.registerExceptionHandler(InvalidNumberException.class, CommandExceptionHandler::handleException);
