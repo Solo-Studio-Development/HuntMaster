@@ -41,7 +41,7 @@ public class CommandHuntMaster {
     }
 
     @Subcommand("reload")
-    @CommandPermission("cbounty.reload")
+    @CommandPermission("huntmaster.reload")
     public void reload(@NotNull CommandSender sender) {
         HuntMaster.getInstance().getLanguage().reload();
         HuntMaster.getInstance().getConfiguration().reload();
@@ -49,7 +49,7 @@ public class CommandHuntMaster {
     }
 
     @Subcommand("streaktop")
-    @CommandPermission("cbounty.streaktop")
+    @CommandPermission("huntmaster.streaktop")
     public void streaktop(@NotNull CommandSender sender, @Default("5") int value) {
         if (value <= 0) {
             sender.sendMessage(MessageKeys.NO_NEGATIVE.getMessage());
@@ -67,13 +67,13 @@ public class CommandHuntMaster {
     }
 
     @Subcommand("menu")
-    @CommandPermission("cbounty.menu")
+    @CommandPermission("huntmaster.menu")
     public void menu(@NotNull Player player) {
         new BountiesMenu(MenuController.getMenuUtils(player)).open();
     }
 
     @Subcommand("set")
-    @CommandPermission("cbounty.set")
+    @CommandPermission("huntmaster.set")
     public void set(@NotNull Player player, @NotNull Player target, RewardTypes rewardType, int reward) {
         AbstractDatabase databaseManager = HuntMaster.getDatabase();
 
@@ -130,7 +130,7 @@ public class CommandHuntMaster {
     }
 
     @Subcommand("remove")
-    @CommandPermission("cbounty.remove")
+    @CommandPermission("huntmaster.remove")
     public void remove(@NotNull Player player, @NotNull Player target) {
         if (!target.isOnline()) {
             player.sendMessage(MessageKeys.PLAYER_NOT_FOUND.getMessage());
@@ -149,8 +149,8 @@ public class CommandHuntMaster {
     }
 
     @Subcommand("raise")
-    @CommandPermission("cbounty.raise")
-    public void raise(@NotNull Player player, @NotNull Player target, int increaseAmount) { // Raise means "raise", not "update". Fixed how the raise feature works.
+    @CommandPermission("huntmaster.raise")
+    public void raise(@NotNull Player player, @NotNull Player target, int increaseAmount) {
         if (!target.isOnline()) {
             player.sendMessage(MessageKeys.PLAYER_NOT_FOUND.getMessage());
             return;
@@ -166,7 +166,7 @@ public class CommandHuntMaster {
             return;
         }
 
-        if (HuntMaster.getDatabase().getSender(target) != player) { // Let's verify that this is the player who set the bounty first.
+        if (HuntMaster.getDatabase().getSender(target) != player) {
             player.sendMessage(MessageKeys.NOT_MATCHING_OWNERS.getMessage());
             return;
         }
@@ -179,7 +179,7 @@ public class CommandHuntMaster {
         int oldReward = HuntMaster.getDatabase().getReward(target);
         int newReward = oldReward + increaseAmount;
 
-        if (maxReward != 0 && newReward > maxReward) { // I'm not even sure how newReward < minReward could possibly be true. Removed.
+        if (maxReward != 0 && newReward > maxReward) {
             player.sendMessage(MessageKeys.INVALID_REWARDLIMIT.getMessage()
                     .replace("{min}", minReward < 0 ? "0" : String.valueOf(minReward))
                     .replace("{max}", maxReward == 0 ? "\\u221E" : String.valueOf(maxReward)));
@@ -210,7 +210,7 @@ public class CommandHuntMaster {
     }
 
     @Subcommand("takeoff")
-    @CommandPermission("cbounty.takeoff")
+    @CommandPermission("huntmaster.takeoff")
     public void takeOff(@NotNull Player player, @NotNull Player target) {
         if (!target.isOnline()) {
             player.sendMessage(MessageKeys.PLAYER_NOT_FOUND.getMessage());
@@ -245,7 +245,7 @@ public class CommandHuntMaster {
     }
 
     @Subcommand("bountyfinder")
-    @CommandPermission("cbounty.bountyfinder")
+    @CommandPermission("huntmaster.bountyfinder")
     public void giveBountyFinder(@NotNull Player player, @NotNull @Default("me") Player target) {
         if (!ConfigKeys.BOUNTYFINDER_ENABLED.getBoolean()) {
             player.sendMessage(MessageKeys.FEATURE_DISABLED.getMessage());

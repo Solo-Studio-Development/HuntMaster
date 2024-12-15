@@ -4,58 +4,60 @@
 # +---------------------------------------------------------------+ #
 #####################################################################
 
-language: "en" # Supported languages -> hu, de, en, tr, es
-set-bounty-on-death: false # If someone kills the bounty then the killer is the bounty.
+# Language and basic configurations
+language: "en" # Supported languages -> de, en
+set-bounty-on-death: false # If someone kills the bounty, the killer becomes the bounty.
 
 database:
   type: "sqlite" # Supported database types -> sqlite, mysql
   mysql:
     host: "localhost"
     port: 3306
-    database: "coma112"
+    database: "user"
     username: "root"
     password: ""
-    # You shouldn't touch this part except if you are familiar with it.
+    # Advanced MySQL settings (modify only if you know what you're doing)
     ssl: false
     certificateverification: false
     poolsize: 10
     lifetime: 1800000
 
-# With this you can modify in the placeholders the yes and no text.
+# Placeholder configuration for yes/no text in messages
 placeholder:
   yes: "&aYes"
   no: "&cNo"
 
-# This shows maximum values for methods. Like: maximum top list to get is 15, so you can only get the 15th top list.
-# bounty-per-player -> Maximum bounty a player can set.
+# Maximum allowed values
 max:
-  top-to-get: 15
-  bounty-per-player: 5
+  top-to-get: 15 # Maximum number of entries in the top list
+  bounty-per-player: 5 # Maximum number of bounties a player can set
 
 ##########################################################################
 # +--------------------------------------------------------------------+ #
-# |                       Dependency settings                          | #
+# |                       Dependency Settings                          | #
 # +--------------------------------------------------------------------+ #
 ##########################################################################
-# You can turn off and on dependencies.
-# You can set the min and max value for each dependency.
+
+# Dependency configuration, including level and money constraints
 
 dependency:
   level:
-    enabled: true
-    min: 0
-    max: 0
+    enabled: true # Enable or disable level dependency
+    min: 0        # Minimum level required
+    max: 0        # Maximum level allowed
   money:
-    min: 0
-    max: 0
+    min: 0        # Minimum money required
+    max: 0        # Maximum money allowed
 
 ###################################################################
 # +-------------------------------------------------------------+ #
 # |                       Items & GUIs                          | #
-# +------------------------------------------------------------ + #
+# +-------------------------------------------------------------+ #
 ###################################################################
 
-# This is the bounty item in the GUI.
+# Configuration for bounty-related items and the graphical interface
+
+# Bounty item details (as shown in the GUI)
 bounty-item:
   amount: 1
   material: "PAPER"
@@ -67,6 +69,7 @@ bounty-item:
     - "&6Reward Type: &f{reward_type} &c⚡"
     - "&6Streak: &f{streak} &c🔥"
 
+# Bounty finder item details
 bountyfinder-item:
   enabled: false
   amount: 1
@@ -77,89 +80,86 @@ bountyfinder-item:
     - "&eHold this item in your hand,"
     - "&eto see which bounty is closest to you"
 
-# Menu Configuration
+# Menu settings
 menu:
-  title: "&6&lBOUNTIES"
-  size: 54
-  update-tick: 2
-  filler-glass: false
+  title: "&6&lBOUNTIES" # Menu title
+  size: 54               # Menu size (number of slots)
+  update-tick: 2         # How often the menu updates
+  filler-glass: false    # Enable or disable filler glass
+
+  # Back button item details
   back-item:
     amount: 1
     material: "RED_STAINED_GLASS"
     name: "&cBack"
     slot: 45
+
+  # Forward button item details
   forward-item:
     amount: 1
     material: "GREEN_STAINED_GLASS"
     name: "&aForward"
     slot: 53
+
+  # Filler glass item details
   filler-glass-item:
     material: GRAY_STAINED_GLASS_PANE
-    name: " " # An empty name for the filler glass
-    lore: [ ] # Empty lore as it is just a filler item
-
+    name: " "   # An empty name for the filler glass
+    lore: [ ]    # Empty lore for the filler glass
 
 ##########################################################################
 # +--------------------------------------------------------------------+ #
-# |                       Formatting settings                          | #
-# +------------------------------------------------------------------- + #
+# |                       Formatting Settings                          | #
+# +--------------------------------------------------------------------+ #
 ##########################################################################
 
-formatting:
-  enabled: true
-  type: dot
-  basic:
-    '1000': K
-    '1000000': M
-    '1000000000': B
-    '1000000000000': T
+# Number formatting configuration
 
-# Types
+formatting:
+  enabled: true     # Enable or disable formatting
+  type: dot         # Supported types: dot, commas, basic
+  basic:            # Abbreviations for large numbers
+    '1000': K       # Thousand -> K
+    '1000000': M    # Million -> M
+    '1000000000': B # Billion -> B
+    '1000000000000': T # Trillion -> T
+
+# Formatting types:
 # dot = 1.000.000
 # commas = 1,000,000
 # basic = 1M
 
 ###############################################################
 # +---------------------------------------------------------+ #
-# |                       FEATURES                          | #
-# +-------------------------------------------------------- + #
+# |                       Features                          | #
+# +---------------------------------------------------------+ #
 ###############################################################
 
-# glowing.enabled -> You can enable and disable the glowing feature for the bounties.
-# glowing.color -> If the glowing.enabled is true then you can set a custom glowing color.
-
-# random-bounty.enabled -> You can enable and disable the random bounty feature.
-# random-bounty.rewardType -> You can set reward types so that the type is the same when the random bounty is run
-# random-bounty.reward -> The reward (int) with the rewardType
-# random-bounty.per-second -> Shows how many seconds to set a random bounty
-# random-bounty.player-value -> You can specify how to show the random bounty in the GUI
-
-# bountyfinder.no-bounty-nearby -> The message to show when there is no bounty nearby
-# bountyfinder.nearest-bounty -> The message to show when there is a bounty nearby
+# Feature-specific configurations
 
 feature:
   glowing:
-    enabled: false
-    color: "RED"
+    enabled: false # Enable or disable the glowing feature for bounties
+    color: "RED"   # Glowing color (if enabled)
+
   random-bounty:
-    enabled: false
-    rewardType: "TOKEN"
-    reward: 50
-    per-second: 7200
-    player-value: "CONSOLE"
+    enabled: false       # Enable or disable random bounty generation
+    rewardType: "TOKEN"  # Reward type for random bounties
+    reward: 50           # Reward amount for random bounties
+    per-second: 7200     # Interval (in seconds) for random bounty generation
+    player-value: "CONSOLE" # Owner of random bounties
+
   bountyfinder:
-    no-bounty-nearby: "&cNo bounties nearby"
-    nearest-bounty: "&a{bounty} &8| &a{distance}m"
+    no-bounty-nearby: "&cNo bounties nearby" # Message when no bounty is nearby
+    nearest-bounty: "&a{bounty} &8| &a{distance}m" # Message for the nearest bounty
 
 ###############################################################
 # +---------------------------------------------------------+ #
-# |                       WEBHOOKS                          | #
-# +-------------------------------------------------------- + #
+# |                       Webhooks                          | #
+# +---------------------------------------------------------+ #
 ###############################################################
 
-# webhook.enabled -> You can enable and disable the webhook feature
-# webhook.url -> Discord Webhook URL
-# webhook.random-sender -> The value if the bounty setter is random (by the random bounty feature)
+# Webhook configuration for Discord integrations
 
 webhook:
   bounty-death-embed:
@@ -175,6 +175,7 @@ webhook:
     footer-icon: ""
     thumbnail: ""
     image: ""
+
   bounty-create-embed:
     url: "WEBHOOK URL HERE!!!"
     enabled: false
@@ -188,6 +189,7 @@ webhook:
     footer-icon: ""
     thumbnail: ""
     image: ""
+
   bounty-remove-embed:
     url: "WEBHOOK URL HERE!!!"
     enabled: false
@@ -201,4 +203,5 @@ webhook:
     footer-icon: ""
     thumbnail: ""
     image: ""
-  random-sender: "UNKNOWN"
+
+  random-sender: "UNKNOWN" # Placeholder for the sender of random bounties

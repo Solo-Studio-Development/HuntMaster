@@ -22,7 +22,7 @@ public class RegisterUtils {
 
         AtomicInteger count = new AtomicInteger();
 
-        new Reflections("net.solostudio.huntmaster")
+        new Reflections("net.solostudio.huntMaster")
                 .getSubTypesOf(Listener.class)
                 .forEach(listenerClass -> {
                     try {

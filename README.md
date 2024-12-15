@@ -67,6 +67,18 @@ implementation(files("libs/plugin.jar"))
 
 ---
 
+## 🔌 Placeholders
+
+- `%hm_isbounty%` - Shows if you are a bounty.
+- `%hm_top_<value>%` - Shows the top <value> list.
+- `%hm_topstreak_<value>%` - Shows the top <value> streak list.
+- `%hm_price_<player>%` - Shows the price of <target>.
+- `%hm_price%` - Shows the price of the player.
+- `%hm_rewardtype%` - Shows the reward type of the player.
+- `%hm_sender%` - Shows the sender of the player.
+
+---
+
 ## ❓ What is bountyfinder?
 
 - The bountyfinder is an item that, when held by the player, displays the nearest bounty.

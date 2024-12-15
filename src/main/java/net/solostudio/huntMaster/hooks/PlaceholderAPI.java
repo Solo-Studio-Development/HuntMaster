@@ -5,17 +5,14 @@ import net.solostudio.huntMaster.HuntMaster;
 import net.solostudio.huntMaster.enums.keys.ConfigKeys;
 import net.solostudio.huntMaster.utils.HuntMasterUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.text.DecimalFormat;
 
 @SuppressWarnings("deprecation")
 public class PlaceholderAPI extends PlaceholderExpansion {
     @Override
     public @NotNull String getIdentifier() {
-        return "cb";
+        return "hm";
     }
 
     @Override

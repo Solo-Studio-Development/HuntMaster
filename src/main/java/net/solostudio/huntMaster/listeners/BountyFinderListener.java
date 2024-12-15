@@ -45,7 +45,7 @@ public class BountyFinderListener implements Listener {
             return ConfigKeys.NEAREST_BOUNTY
                     .getString()
                     .replace("{bounty}", bountyPlayer.getName())
-                    .replace("{distance}", String.valueOf(player.getLocation().distance(bountyPlayer.getLocation())));
+                    .replace("{distance}", String.valueOf(Math.round(player.getLocation().distance(bountyPlayer.getLocation()))));
 
         } else return ConfigKeys.NO_BOUNTY_NEARBY.getString();
     }

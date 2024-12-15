@@ -15,24 +15,30 @@ public record TopData(@NotNull OfflinePlayer player, int streak) {
     public static TextComponent getTopStreak(int value) {
         List<TopData> topStreaks = HuntMaster.getDatabase().getTop(value);
 
-        TextComponent message = new TextComponent(MessageKeys.TOP_HEADER
-                .getMessage()
-                .replace("{value}", String.valueOf(value)));
+        TextComponent message = new TextComponent(
+                MessageKeys.TOP_HEADER
+                        .getMessage()
+                        .replace("{value}", String.valueOf(value))
+        );
+        message.addExtra("\n\n");
 
-        IntStream
-                .range(0, topStreaks.size())
-                .forEach(index -> {
-                    TopData top = topStreaks.get(index);
+        IntStream.range(0, topStreaks.size()).forEach(index -> {
+            TopData top = topStreaks.get(index);
 
-                    message.addExtra(MessageKeys.TOP_MESSAGE
+            TextComponent playerMessage = new TextComponent(
+                    MessageKeys.TOP_MESSAGE
                             .getMessage()
                             .replace("{streak}", String.valueOf(top.streak))
                             .replace("{name}", Objects.requireNonNull(top.player().getName()))
-                            .replace("{place}", String.valueOf(index + 1)));
+                            .replace("{place}", String.valueOf(index + 1))
+            );
 
-                    if (index < topStreaks.size() - 1) message.addExtra("\n");
-                });
+            message.addExtra(playerMessage);
+
+            if (index < topStreaks.size() - 1) message.addExtra("\n");
+        });
 
         return message;
     }
+
 }
