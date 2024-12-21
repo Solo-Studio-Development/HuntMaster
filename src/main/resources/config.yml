@@ -9,7 +9,7 @@ language: "en" # Supported languages -> de, en
 set-bounty-on-death: false # If someone kills the bounty, the killer becomes the bounty.
 
 database:
-  type: "sqlite" # Supported database types -> sqlite, mysql
+  type: "h2" # Supported database types -> h2, mysql
   mysql:
     host: "localhost"
     port: 3306

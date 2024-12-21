@@ -1,56 +1,63 @@
 package net.solostudio.huntMaster.utils;
 
 import net.solostudio.huntMaster.HuntMaster;
+import net.solostudio.huntMaster.annotations.Bounties;
+import net.solostudio.huntMaster.annotations.OwnBounties;
+import net.solostudio.huntMaster.annotations.Players;
 import net.solostudio.huntMaster.commands.CommandHuntMaster;
 import net.solostudio.huntMaster.exceptions.CommandExceptionHandler;
-import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
-import org.reflections.Reflections;
-import revxrsal.commands.bukkit.BukkitCommandHandler;
-import revxrsal.commands.bukkit.exception.InvalidPlayerException;
-import revxrsal.commands.bukkit.exception.SenderNotPlayerException;
-import revxrsal.commands.exception.InvalidNumberException;
-import revxrsal.commands.exception.MissingArgumentException;
-import revxrsal.commands.exception.NoPermissionException;
+import net.solostudio.huntMaster.listeners.BountyDeathListener;
+import net.solostudio.huntMaster.listeners.BountyFinderListener;
+import net.solostudio.huntMaster.listeners.GlowingListener;
+import net.solostudio.huntMaster.managers.BountyData;
+import net.solostudio.huntMaster.menu.MenuListener;
+import org.bukkit.entity.Player;
+import revxrsal.commands.bukkit.BukkitLamp;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Objects;
 
 public class RegisterUtils {
     public static void registerListeners() {
         LoggerUtils.info("### Registering listeners... ###");
 
-        AtomicInteger count = new AtomicInteger();
+        HuntMaster.getInstance().getServer().getPluginManager().registerEvents(new BountyDeathListener(), HuntMaster.getInstance());
+        HuntMaster.getInstance().getServer().getPluginManager().registerEvents(new BountyFinderListener(), HuntMaster.getInstance());
+        HuntMaster.getInstance().getServer().getPluginManager().registerEvents(new GlowingListener(), HuntMaster.getInstance());
+        HuntMaster.getInstance().getServer().getPluginManager().registerEvents(new MenuListener(), HuntMaster.getInstance());
 
-        new Reflections("net.solostudio.huntMaster")
-                .getSubTypesOf(Listener.class)
-                .forEach(listenerClass -> {
-                    try {
-                        Bukkit.getServer().getPluginManager().registerEvents(listenerClass.getDeclaredConstructor().newInstance(), HuntMaster.getInstance());
-                        count.getAndIncrement();
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException exception) {
-                        LoggerUtils.error(exception.getMessage());
-                    }
-                });
-
-        LoggerUtils.info("### Successfully registered {} listener. ###", count.get());
+        LoggerUtils.info("### Successfully registered 4 listener. ###");
     }
 
     public static void registerCommands() {
         LoggerUtils.info("### Registering commands... ###");
 
-        BukkitCommandHandler handler = BukkitCommandHandler.create(HuntMaster.getInstance());
+        var lamp = BukkitLamp.builder(HuntMaster.getInstance())
+                        .exceptionHandler(new CommandExceptionHandler())
 
-        handler.register(new CommandHuntMaster());
-        LoggerUtils.info("### Successfully registered {} command(s). ###", handler.getCommands().size());
-        LoggerUtils.info("### Registering exception handlers... ###");
-        handler.registerExceptionHandler(SenderNotPlayerException.class, CommandExceptionHandler::handleException);
-        handler.registerExceptionHandler(InvalidNumberException.class, CommandExceptionHandler::handleException);
-        handler.registerExceptionHandler(NoPermissionException.class, CommandExceptionHandler::handleException);
-        handler.registerExceptionHandler(MissingArgumentException.class, CommandExceptionHandler::handleException);
-        handler.registerExceptionHandler(InvalidPlayerException.class, CommandExceptionHandler::handleException);
+                        .suggestionProviders(providers -> {
+                            providers.addProviderForAnnotation(Players.class, player -> context -> HuntMaster.getInstance().getServer().getOnlinePlayers()
+                                    .stream()
+                                    .map(Player::getName)
+                                    .toList());
+                        })
 
-        handler.registerBrigadier();
+                        .suggestionProviders(providers -> {
+                            providers.addProviderForAnnotation(Bounties.class, player -> context -> HuntMaster.getDatabase().getBounties()
+                                    .stream()
+                                    .map(BountyData::target)
+                                    .toList());
+                        })
+
+                        .suggestionProviders(providers -> {
+                            providers.addProviderForAnnotation(OwnBounties.class, player -> context -> HuntMaster.getDatabase().getOwnBounties(Objects.requireNonNull(context.actor().asPlayer()))
+                                .stream()
+                                .map(BountyData::target)
+                                .toList());
+                })
+
+                        .build();
+
+        lamp.register(new CommandHuntMaster());
         LoggerUtils.info("### Successfully registered exception handlers... ###");
     }
 }

@@ -22,7 +22,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 @Getter
 public class MySQL extends AbstractDatabase {
@@ -89,6 +88,32 @@ public class MySQL extends AbstractDatabase {
         } catch (SQLException exception) {
             LoggerUtils.error(exception.getMessage());
         }
+    }
+
+    @Override
+    public List<BountyData> getOwnBounties(@NotNull Player player) {
+        List<BountyData> ownBounties = new ArrayList<>();
+        String query = "SELECT * FROM huntmaster WHERE PLAYER = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, player.getName());
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("ID");
+                int reward = resultSet.getInt("REWARD");
+                String target = resultSet.getString("TARGET");
+                String playerName = resultSet.getString("PLAYER");
+                String rewardType = resultSet.getString("REWARD_TYPE");
+
+                ownBounties.add(new BountyData(id, playerName, target, RewardTypes.valueOf(rewardType), reward));
+            }
+        } catch (SQLException exception) {
+            LoggerUtils.error(exception.getMessage());
+        }
+
+        return ownBounties;
     }
 
     @Override

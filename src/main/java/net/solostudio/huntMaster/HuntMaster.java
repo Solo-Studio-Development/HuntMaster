@@ -5,12 +5,11 @@ import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskSchedule
 import lombok.Getter;
 import net.solostudio.huntMaster.config.Config;
 import net.solostudio.huntMaster.database.AbstractDatabase;
+import net.solostudio.huntMaster.database.H2;
 import net.solostudio.huntMaster.database.MySQL;
-import net.solostudio.huntMaster.database.SQLite;
 import net.solostudio.huntMaster.enums.DatabaseTypes;
 import net.solostudio.huntMaster.enums.LanguageTypes;
 import net.solostudio.huntMaster.enums.keys.ConfigKeys;
-import net.solostudio.huntMaster.hooks.PlaceholderAPI;
 import net.solostudio.huntMaster.language.Language;
 import net.solostudio.huntMaster.processor.BountyScheduler;
 import net.solostudio.huntMaster.utils.LoggerUtils;
@@ -87,12 +86,12 @@ public final class HuntMaster extends JavaPlugin {
                     mySQL.createTable();
                     LoggerUtils.info("### MySQL database has been successfully initialized! ###");
                 }
-                case SQLITE -> {
+                case H2 -> {
                     LoggerUtils.info("### SQLite support found! Starting to initializing it... ###");
-                    database = new SQLite();
-                    SQLite sqlite = (SQLite) database;
+                    database = new H2();
+                    H2 h2 = (H2) database;
 
-                    sqlite.createTable();
+                    h2.createTable();
                     LoggerUtils.info("### SQLite database has been successfully initialized! ###");
                 }
                 default -> throw new SQLException("Unsupported database type!");

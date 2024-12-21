@@ -1,6 +1,9 @@
 package net.solostudio.huntMaster.commands;
 
 import net.solostudio.huntMaster.HuntMaster;
+import net.solostudio.huntMaster.annotations.Bounties;
+import net.solostudio.huntMaster.annotations.OwnBounties;
+import net.solostudio.huntMaster.annotations.Players;
 import net.solostudio.huntMaster.database.AbstractDatabase;
 import net.solostudio.huntMaster.enums.RewardTypes;
 import net.solostudio.huntMaster.enums.keys.ConfigKeys;
@@ -16,10 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.Default;
-import revxrsal.commands.annotation.DefaultFor;
-import revxrsal.commands.annotation.Subcommand;
+import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import static net.solostudio.huntMaster.utils.HuntMasterUtils.handleLevelReward;
@@ -28,7 +28,7 @@ import static net.solostudio.huntMaster.utils.HuntMasterUtils.handleMoneyReward;
 @SuppressWarnings("deprecation")
 @Command({"bounty", "huntmaster"})
 public class CommandHuntMaster {
-    @DefaultFor({"bounty", "huntmaster"})
+    @CommandPlaceholder
     public void defaultCommand(@NotNull CommandSender sender) {
         help(sender);
     }
@@ -42,6 +42,7 @@ public class CommandHuntMaster {
 
     @Subcommand("reload")
     @CommandPermission("huntmaster.reload")
+    @Description("Reloads the plugin.")
     public void reload(@NotNull CommandSender sender) {
         HuntMaster.getInstance().getLanguage().reload();
         HuntMaster.getInstance().getConfiguration().reload();
@@ -50,6 +51,7 @@ public class CommandHuntMaster {
 
     @Subcommand("streaktop")
     @CommandPermission("huntmaster.streaktop")
+    @Description("Retrieves the streak top list.")
     public void streaktop(@NotNull CommandSender sender, @Default("5") int value) {
         if (value <= 0) {
             sender.sendMessage(MessageKeys.NO_NEGATIVE.getMessage());
@@ -68,13 +70,15 @@ public class CommandHuntMaster {
 
     @Subcommand("menu")
     @CommandPermission("huntmaster.menu")
+    @Description("Opens the huntmaster menu.")
     public void menu(@NotNull Player player) {
         new BountiesMenu(MenuController.getMenuUtils(player)).open();
     }
 
     @Subcommand("set")
     @CommandPermission("huntmaster.set")
-    public void set(@NotNull Player player, @NotNull Player target, RewardTypes rewardType, int reward) {
+    @Description("Puts a bounty on the target.")
+    public void set(@NotNull Player player, @NotNull @Players Player target, RewardTypes rewardType, int reward) {
         AbstractDatabase databaseManager = HuntMaster.getDatabase();
 
         if (!target.isOnline()) {
@@ -131,7 +135,8 @@ public class CommandHuntMaster {
 
     @Subcommand("remove")
     @CommandPermission("huntmaster.remove")
-    public void remove(@NotNull Player player, @NotNull Player target) {
+    @Description("Removes the bounty from the target.")
+    public void remove(@NotNull Player player, @NotNull @Bounties Player target) {
         if (!target.isOnline()) {
             player.sendMessage(MessageKeys.PLAYER_NOT_FOUND.getMessage());
             return;
@@ -150,7 +155,8 @@ public class CommandHuntMaster {
 
     @Subcommand("raise")
     @CommandPermission("huntmaster.raise")
-    public void raise(@NotNull Player player, @NotNull Player target, int increaseAmount) {
+    @Description("Increases the bounty.")
+    public void raise(@NotNull Player player, @NotNull @OwnBounties Player target, int increaseAmount) {
         if (!target.isOnline()) {
             player.sendMessage(MessageKeys.PLAYER_NOT_FOUND.getMessage());
             return;
@@ -182,7 +188,7 @@ public class CommandHuntMaster {
         if (maxReward != 0 && newReward > maxReward) {
             player.sendMessage(MessageKeys.INVALID_REWARDLIMIT.getMessage()
                     .replace("{min}", minReward < 0 ? "0" : String.valueOf(minReward))
-                    .replace("{max}", maxReward == 0 ? "\\u221E" : String.valueOf(maxReward)));
+                    .replace("{max}", String.valueOf(maxReward)));
             return;
         }
 
@@ -211,7 +217,8 @@ public class CommandHuntMaster {
 
     @Subcommand("takeoff")
     @CommandPermission("huntmaster.takeoff")
-    public void takeOff(@NotNull Player player, @NotNull Player target) {
+    @Description("Forcibly removes the bounty from the given player.")
+    public void takeOff(@NotNull Player player, @NotNull @Bounties Player target) {
         if (!target.isOnline()) {
             player.sendMessage(MessageKeys.PLAYER_NOT_FOUND.getMessage());
             return;
@@ -246,7 +253,8 @@ public class CommandHuntMaster {
 
     @Subcommand("bountyfinder")
     @CommandPermission("huntmaster.bountyfinder")
-    public void giveBountyFinder(@NotNull Player player, @NotNull @Default("me") Player target) {
+    @Description("Gives the player a bountyfinder.")
+    public void giveBountyFinder(@NotNull Player player, @NotNull @Players @Default("me") Player target) {
         if (!ConfigKeys.BOUNTYFINDER_ENABLED.getBoolean()) {
             player.sendMessage(MessageKeys.FEATURE_DISABLED.getMessage());
             return;

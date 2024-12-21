@@ -37,5 +37,8 @@ public abstract class AbstractDatabase {
     // Booleans
     public abstract boolean isBounty(@NotNull Player player);
     public abstract boolean reachedMaximumBounty(@NotNull Player player);
+
+    public abstract List<BountyData> getOwnBounties(@NotNull Player player);
+
     public abstract boolean isSenderIsRandom(@NotNull Player player);
 }

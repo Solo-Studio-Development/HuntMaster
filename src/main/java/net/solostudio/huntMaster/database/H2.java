@@ -1,5 +1,7 @@
 package net.solostudio.huntMaster.database;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.Getter;
 import net.solostudio.huntMaster.HuntMaster;
 import net.solostudio.huntMaster.enums.RewardTypes;
@@ -11,26 +13,37 @@ import net.solostudio.huntMaster.utils.LoggerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.h2.engine.Database;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
-public class SQLite extends AbstractDatabase {
+public class H2 extends AbstractDatabase {
     private final Connection connection;
+    private final HikariDataSource dataSource;
 
-    public SQLite() throws SQLException, ClassNotFoundException {
-        Class.forName("org.sqlite.JDBC");
-        File dataFolder = new File(HuntMaster.getInstance().getDataFolder(), "huntmaster.db");
-        String url = "jdbc:sqlite:" + dataFolder;
-        connection = DriverManager.getConnection(url);
+    public H2() throws SQLException, ClassNotFoundException {
+        Class.forName("net.solostudio.vaultcher.libs.h2.Driver");
+
+        HikariConfig hikariConfig = new HikariConfig();
+
+        String url = "jdbc:h2:" + HuntMaster.getInstance().getDataFolder().getAbsolutePath() + "/database;MODE=MySQL";
+
+        hikariConfig.setJdbcUrl(url);
+        hikariConfig.setUsername("sa");
+        hikariConfig.setPassword("");
+        hikariConfig.setMaximumPoolSize(10);
+        hikariConfig.setPoolName("VaultcherPool");
+
+        dataSource = new HikariDataSource(hikariConfig);
+        connection = dataSource.getConnection();
     }
 
     public void createTable() {
@@ -45,7 +58,7 @@ public class SQLite extends AbstractDatabase {
 
     @Override
     public void createBounty(@NotNull Player player, @NotNull Player target, @NotNull RewardTypes rewardType, int reward) {
-        String query = "INSERT INTO huntmaster (PLAYER, TARGET, REWARD_TYPE, REWARD, BOUNTY_DATE) VALUES (?, ?, ?, ?, DATETIME('NOW'))";
+        String query = "INSERT INTO huntmaster (PLAYER, TARGET, REWARD_TYPE, REWARD, BOUNTY_DATE) VALUES (?, ?, ?, ?, NOW())";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, player.getName());
@@ -62,7 +75,7 @@ public class SQLite extends AbstractDatabase {
 
     @Override
     public void createRandomBounty(@NotNull Player target, @NotNull RewardTypes rewardType, int reward) {
-        String query = "INSERT INTO huntmaster (PLAYER, TARGET, REWARD_TYPE, REWARD, BOUNTY_DATE) VALUES (?, ?, ?, ?, DATETIME('NOW'))";
+        String query = "INSERT INTO huntmaster (PLAYER, TARGET, REWARD_TYPE, REWARD, BOUNTY_DATE) VALUES (?, ?, ?, ?, NOW())";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, ConfigKeys.RANDOM_BOUNTY_PLAYER_VALUE.getString());
@@ -75,6 +88,32 @@ public class SQLite extends AbstractDatabase {
         } catch (SQLException exception) {
             LoggerUtils.error(exception.getMessage());
         }
+    }
+
+    @Override
+    public List<BountyData> getOwnBounties(@NotNull Player player) {
+        List<BountyData> ownBounties = new ArrayList<>();
+        String query = "SELECT * FROM huntmaster WHERE PLAYER = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, player.getName());
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("ID");
+                int reward = resultSet.getInt("REWARD");
+                String target = resultSet.getString("TARGET");
+                String playerName = resultSet.getString("PLAYER");
+                String rewardType = resultSet.getString("REWARD_TYPE");
+
+                ownBounties.add(new BountyData(id, playerName, target, RewardTypes.valueOf(rewardType), reward));
+            }
+        } catch (SQLException exception) {
+            LoggerUtils.error(exception.getMessage());
+        }
+
+        return ownBounties;
     }
 
     @Override
@@ -104,6 +143,7 @@ public class SQLite extends AbstractDatabase {
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = preparedStatement.executeQuery();
+
             while (resultSet.next()) {
                 int id = resultSet.getInt("ID");
                 int reward = resultSet.getInt("REWARD");
@@ -121,7 +161,7 @@ public class SQLite extends AbstractDatabase {
 
     @Override
     public int getStreak(@NotNull OfflinePlayer player) {
-        String updateQuery = "UPDATE huntmaster SET STREAK = (julianday('now') - julianday((SELECT MAX(BOUNTY_DATE) FROM huntmaster WHERE TARGET = ?))) WHERE TARGET = ?";
+        String updateQuery = "UPDATE huntmaster SET STREAK = DATEDIFF(NOW(), (SELECT MAX(BOUNTY_DATE) FROM huntmaster WHERE TARGET = ?)) WHERE TARGET = ?";
         String selectQuery = "SELECT STREAK FROM huntmaster WHERE TARGET = ?";
 
         try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
@@ -198,11 +238,11 @@ public class SQLite extends AbstractDatabase {
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, player.getName());
             ResultSet resultSet = preparedStatement.executeQuery();
-            RewardTypes rewardType;
+            RewardTypes rewardTypes;
 
             if (resultSet.next()) {
-                rewardType = RewardTypes.valueOf(resultSet.getString("REWARD_TYPE"));
-                return rewardType;
+                rewardTypes = RewardTypes.valueOf(resultSet.getString("REWARD_TYPE"));
+                return rewardTypes;
             }
         } catch (SQLException exception) {
             LoggerUtils.error(exception.getMessage());
@@ -309,7 +349,7 @@ public class SQLite extends AbstractDatabase {
     public void reconnect() {
         try {
             if (getConnection() != null && !getConnection().isClosed()) getConnection().close();
-            new SQLite();
+            new MySQL(Objects.requireNonNull(HuntMaster.getInstance().getConfiguration().getSection("database.mysql")));
         } catch (SQLException | ClassNotFoundException exception) {
             LoggerUtils.error(exception.getMessage());
         }

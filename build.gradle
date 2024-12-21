@@ -1,8 +1,9 @@
 plugins {
     id "java"
     id "io.freefair.lombok" version "8.11"
-    id "io.github.goooler.shadow" version "8.1.8"
+    id "com.gradleup.shadow" version "8.3.2"
     id "io.papermc.paperweight.userdev" version "1.7.7"
+    id "io.github.revxrsal.zapper" version "1.0.2"
 }
 
 group = 'net.solostudio'
@@ -10,23 +11,28 @@ version = '1.0.0'
 
 repositories {
     mavenCentral()
-    //maven { url = "https://repo.papermc.io/repository/maven-public/" }
     maven { url = "https://oss.sonatype.org/content/groups/public/" }
     maven { url = "https://jitpack.io" }
-    maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+    maven { url = "https://repo.extendedclip.com/content/repositories/placeholderapi/" }
 }
 
 dependencies {
-    compileOnly "org.projectlombok:lombok:1.18.36"
-    compileOnly 'me.clip:placeholderapi:2.11.6'
-    compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1' exclude group: 'org.bukkit', module: 'bukkit'
-    implementation "com.zaxxer:HikariCP:6.2.1"
-    implementation "mysql:mysql-connector-java:8.0.33"
-    implementation 'com.github.Revxrsal.Lamp:common:3.2.1'
-    implementation 'com.github.Revxrsal.Lamp:bukkit:3.2.1'
-    implementation "org.bstats:bstats-bukkit:3.0.2"
-    implementation "com.github.Anon8281:UniversalScheduler:0.1.6"
-    implementation 'org.reflections:reflections:0.10.2'
+    implementation("io.github.revxrsal:lamp.bukkit:4.0.0-beta.23") {
+        exclude(module: "lamp.common")
+        exclude(module: "lamp.brigadier")
+    }
+
+    zap("mysql:mysql-connector-java:8.0.33")
+    zap("io.github.revxrsal:lamp.common:4.0.0-beta.23")
+    zap("io.github.revxrsal:lamp.brigadier:4.0.0-beta.23")
+    zap("org.bstats:bstats-bukkit:3.0.2")
+    zap("com.github.Anon8281:UniversalScheduler:0.1.6")
+    zap("com.h2database:h2:2.3.232")
+    zap("com.zaxxer:HikariCP:6.2.1")
+
+    compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly("org.projectlombok:lombok:1.18.36")
+    compileOnly "com.github.MilkBowl:VaultAPI:1.7.1" exclude group: "org.bukkit'", module: "bukkit"
 
     paperweight.paperDevBundle("1.21.3-R0.1-SNAPSHOT")
 }
@@ -41,10 +47,18 @@ compileJava {
     options.compilerArgs += ["-parameters"]
 }
 
-shadowJar {
-    relocate "org.bstats", "net.solostudio.huntmaster"
-    relocate "com.github.Anon8281.universalScheduler", "net.solostudio.huntmaster"
+zapper {
+    libsFolder = "libs"
+    relocationPrefix = "net.solostudio.huntMaster.libs"
 
+    repositories { it.includeProjectRepositories() }
+
+    relocate("org.bstats", "bstats")
+    relocate("org.h2", "h2")
+    relocate("com.github.Anon8281.universalScheduler", "universalScheduler")
+}
+
+shadowJar {
     exclude("lamp_pt.properties")
     exclude("lamp_en.properties")
     exclude("lamp_it.properties")
@@ -53,6 +67,4 @@ shadowJar {
     exclude("lamp-bukkit_it.properties")
     exclude("lamp-bukkit_fr.properties")
     exclude("lamp-bukkit_en.properties")
-
-    minimize()
 }
