@@ -2,10 +2,11 @@ name: HuntMaster
 version: '1.0.0'
 main: net.solostudio.huntMaster.HuntMaster
 api-version: '1.20'
-load: STARTUP
 authors: [ Solo Studio ]
 description: A powerful and dynamic name that captures the essence of setting bounties, managing targets, and tracking players with expert-level features. Perfect for a plugin that turns bounty hunting into a thrilling and strategic experience on your server!
 website: https://discord.gg/CxawDwDZtd
+folia-supported: true
+
 dependencies:
   server:
     PlaceholderAPI:

@@ -16,10 +16,7 @@ import org.bukkit.entity.Player;
 import org.h2.engine.Database;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -30,7 +27,7 @@ public class H2 extends AbstractDatabase {
     private final HikariDataSource dataSource;
 
     public H2() throws SQLException, ClassNotFoundException {
-        Class.forName("net.solostudio.vaultcher.libs.h2.Driver");
+        Class.forName("net.solostudio.huntMaster.libs.h2.Driver");
 
         HikariConfig hikariConfig = new HikariConfig();
 
@@ -161,25 +158,47 @@ public class H2 extends AbstractDatabase {
 
     @Override
     public int getStreak(@NotNull OfflinePlayer player) {
-        String updateQuery = "UPDATE huntmaster SET STREAK = DATEDIFF(NOW(), (SELECT MAX(BOUNTY_DATE) FROM huntmaster WHERE TARGET = ?)) WHERE TARGET = ?";
+        String maxDateQuery = "SELECT MAX(BOUNTY_DATE) AS MAX_DATE FROM huntmaster WHERE TARGET = ?";
+        String updateQuery = "UPDATE huntmaster SET STREAK = ? WHERE TARGET = ?";
         String selectQuery = "SELECT STREAK FROM huntmaster WHERE TARGET = ?";
 
-        try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
+        try (PreparedStatement maxDateStatement = connection.prepareStatement(maxDateQuery);
+             PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
              PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
-            updateStatement.setString(1, player.getName());
-            updateStatement.setString(2, player.getName());
-            updateStatement.executeUpdate();
 
+            maxDateStatement.setString(1, player.getName());
+            ResultSet maxDateResult = maxDateStatement.executeQuery();
+
+            if (maxDateResult.next()) {
+                Date maxBountyDate = maxDateResult.getDate("MAX_DATE");
+                if (maxBountyDate != null) {
+                    // Calculate the difference in days in Java
+                    long diffInMillis = System.currentTimeMillis() - maxBountyDate.getTime();
+                    int streak = (int) (diffInMillis / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+
+                    // Update the STREAK column
+                    updateStatement.setInt(1, streak);
+                    updateStatement.setString(2, player.getName());
+                    updateStatement.executeUpdate();
+                }
+            }
+
+            // Fetch the updated STREAK
             selectStatement.setString(1, player.getName());
             ResultSet resultSet = selectStatement.executeQuery();
 
-            if (resultSet.next()) return resultSet.getInt("STREAK");
+            if (resultSet.next()) {
+                return resultSet.getInt("STREAK");
+            }
         } catch (SQLException exception) {
             LoggerUtils.error(exception.getMessage());
         }
 
         return 0;
     }
+
+
+
 
     @Override
     public boolean isBounty(@NotNull Player player) {

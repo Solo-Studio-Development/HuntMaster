@@ -21,7 +21,8 @@ public class BountyScheduler {
     }
 
     private void addRandomBounty() {
-        List<Player> playersWithoutBounty = Bukkit.getOnlinePlayers().stream()
+        List<Player> playersWithoutBounty = Bukkit.getOnlinePlayers()
+                .stream()
                 .filter(player -> !HuntMaster.getDatabase().isBounty(player))
                 .collect(Collectors.toList());
 

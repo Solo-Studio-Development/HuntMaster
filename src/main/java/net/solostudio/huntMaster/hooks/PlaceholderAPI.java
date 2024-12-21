@@ -24,9 +24,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return Optional.ofNullable(HuntMaster.getInstance())
-                .map(instance -> instance.getDescription().getVersion())
-                .orElse("1.0.0");
+        return HuntMaster.getInstance().getDescription().getVersion();
     }
 
     @Override

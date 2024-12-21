@@ -15,6 +15,7 @@ import net.solostudio.huntMaster.processor.BountyScheduler;
 import net.solostudio.huntMaster.utils.LoggerUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
+import revxrsal.zapper.ZapperJavaPlugin;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -23,7 +24,7 @@ import java.util.Objects;
 import static net.solostudio.huntMaster.hooks.PlaceholderAPI.registerHook;
 import static net.solostudio.huntMaster.utils.StartingUtils.*;
 
-public final class HuntMaster extends JavaPlugin {
+public final class HuntMaster extends ZapperJavaPlugin {
     @Getter private static HuntMaster instance;
     @Getter private static TaskScheduler scheduler;
     @Getter private Language language;
@@ -87,12 +88,12 @@ public final class HuntMaster extends JavaPlugin {
                     LoggerUtils.info("### MySQL database has been successfully initialized! ###");
                 }
                 case H2 -> {
-                    LoggerUtils.info("### SQLite support found! Starting to initializing it... ###");
+                    LoggerUtils.info("### H2 support found! Starting to initializing it... ###");
                     database = new H2();
                     H2 h2 = (H2) database;
 
                     h2.createTable();
-                    LoggerUtils.info("### SQLite database has been successfully initialized! ###");
+                    LoggerUtils.info("### H2 database has been successfully initialized! ###");
                 }
                 default -> throw new SQLException("Unsupported database type!");
             }

@@ -26,6 +26,7 @@ public enum MessageKeys {
     NO_NEGATIVE("messages.no-negative"),
     INVALID_PLAYER("messages.invalid-player"),
     MISSING_ARGUMENT("messages.missing-argument"),
+    OFFLINE_PLAYER("messages.offline-player"),
 
     SUCCESSFUL_SET("messages.successful-set"),
     BOUNTY_SET("messages.bounty-set-broadcast"),

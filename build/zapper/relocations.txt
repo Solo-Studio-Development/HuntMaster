@@ -1,0 +1,3 @@
+org.bstats:net.solostudio.huntMaster.libs.bstats
+org.h2:net.solostudio.huntMaster.libs.h2
+com.github.Anon8281.universalScheduler:net.solostudio.huntMaster.libs.universalScheduler

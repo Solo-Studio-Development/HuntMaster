@@ -54,3 +54,4 @@ messages:
   invalid-rewardlimit: "&c&lHUNTMASTER &8| Das Minimum ist {min} und das Maximum ist {max}"
   missing-argument: "&c&lHUNTMASTER &8| &cKorrekte Nutzung: {usage}"
   invalid-player: "&c&lHUNTMASTER &8| &cUngültiger Spieler!"
+  offline-player: "&c&lHUNTMASTER &8| &cDer Spieler wurde nicht gefunden oder ist offline!"
