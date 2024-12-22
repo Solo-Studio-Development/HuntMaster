@@ -53,6 +53,9 @@ public class BountiesMenu extends PaginatedMenu {
 
         event.setCancelled(true);
 
+        int clickedSlot = event.getSlot();
+        List<BountyData> bounties = HuntMaster.getDatabase().getBounties();
+
         if (event.getSlot() == ConfigKeys.FORWARD_SLOT.getInt()) {
             int nextPageIndex = page + 1;
             int totalPages = (int) Math.ceil((double) HuntMaster.getDatabase().getBounties().size() / getMaxItemsPerPage());
@@ -74,21 +77,24 @@ public class BountiesMenu extends PaginatedMenu {
                 super.open();
             }
         }
+
+        if (clickedSlot == ConfigKeys.FORWARD_SLOT.getInt()) handlePageChange(player, bounties.size(), true);
+        else if (clickedSlot == ConfigKeys.BACK_SLOT.getInt()) handlePageChange(player, bounties.size(), false);
     }
 
     @Override
     public void setMenuItems() {
         List<BountyData> bounties = HuntMaster.getDatabase().getBounties();
+        int startIndex = page * getMaxItemsPerPage();
+        int endIndex = Math.min(startIndex + getMaxItemsPerPage(), bounties.size());
 
         inventory.clear();
         addMenuBorder();
 
-        int startIndex = page * getMaxItemsPerPage();
-        int endIndex = Math.min(startIndex + getMaxItemsPerPage(), bounties.size());
-
-        IntStream
-                .range(startIndex, endIndex)
-                .forEach(index -> inventory.addItem(createBountyItem(bounties.get(index))));
+        bounties.subList(startIndex, endIndex)
+                .stream()
+                .map(this::createBountyItem)
+                .forEach(inventory::addItem);
     }
 
     @EventHandler
@@ -96,7 +102,7 @@ public class BountiesMenu extends PaginatedMenu {
         if (event.getInventory().equals(inventory)) close();
     }
 
-    private static ItemStack createBountyItem(@NotNull BountyData bounty) {
+    private ItemStack createBountyItem(@NotNull BountyData bounty) {
         ItemStack itemStack = ItemFactory.createItemFromString("bounty-item");
         ItemMeta meta = itemStack.getItemMeta();
 
@@ -124,5 +130,18 @@ public class BountiesMenu extends PaginatedMenu {
             itemStack.setItemMeta(meta);
         }
         return itemStack;
+    }
+
+    private void handlePageChange(@NotNull Player player, int totalItems, boolean isForward) {
+        int totalPages = (int) Math.ceil((double) totalItems / getMaxItemsPerPage());
+        int newPage = page + (isForward ? 1 : -1);
+
+        if (newPage < 0 || newPage >= totalPages) {
+            player.sendMessage(isForward ? MessageKeys.LAST_PAGE.getMessage() : MessageKeys.FIRST_PAGE.getMessage());
+            return;
+        }
+
+        page = newPage;
+        super.open();
     }
 }

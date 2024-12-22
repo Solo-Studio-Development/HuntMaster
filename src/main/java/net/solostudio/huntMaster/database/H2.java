@@ -171,25 +171,21 @@ public class H2 extends AbstractDatabase {
 
             if (maxDateResult.next()) {
                 Date maxBountyDate = maxDateResult.getDate("MAX_DATE");
-                if (maxBountyDate != null) {
-                    // Calculate the difference in days in Java
-                    long diffInMillis = System.currentTimeMillis() - maxBountyDate.getTime();
-                    int streak = (int) (diffInMillis / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
 
-                    // Update the STREAK column
+                if (maxBountyDate != null) {
+                    long diffInMillis = System.currentTimeMillis() - maxBountyDate.getTime();
+                    int streak = (int) (diffInMillis / (1000 * 60 * 60 * 24));
+
                     updateStatement.setInt(1, streak);
                     updateStatement.setString(2, player.getName());
                     updateStatement.executeUpdate();
                 }
             }
 
-            // Fetch the updated STREAK
             selectStatement.setString(1, player.getName());
             ResultSet resultSet = selectStatement.executeQuery();
 
-            if (resultSet.next()) {
-                return resultSet.getInt("STREAK");
-            }
+            if (resultSet.next()) return resultSet.getInt("STREAK");
         } catch (SQLException exception) {
             LoggerUtils.error(exception.getMessage());
         }

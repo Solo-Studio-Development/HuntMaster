@@ -53,7 +53,7 @@ public class RegisterUtils {
                                 .stream()
                                 .map(BountyData::target)
                                 .toList());
-                })
+                        })
 
                         .build();
 

@@ -81,6 +81,7 @@ public final class HuntMaster extends ZapperJavaPlugin {
             switch (DatabaseTypes.valueOf(ConfigKeys.DATABASE.getString().toUpperCase())) {
                 case MYSQL -> {
                     LoggerUtils.info("### MySQL support found! Starting to initializing it... ###");
+
                     database = new MySQL(Objects.requireNonNull(getConfiguration().getSection("database.mysql")));
                     MySQL mySQL = (MySQL) database;
 
@@ -89,6 +90,7 @@ public final class HuntMaster extends ZapperJavaPlugin {
                 }
                 case H2 -> {
                     LoggerUtils.info("### H2 support found! Starting to initializing it... ###");
+
                     database = new H2();
                     H2 h2 = (H2) database;
 

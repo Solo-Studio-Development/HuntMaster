@@ -32,7 +32,7 @@ dependencies {
 
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("org.projectlombok:lombok:1.18.36")
-    compileOnly "com.github.MilkBowl:VaultAPI:1.7.1" exclude group: "org.bukkit'", module: "bukkit"
+    compileOnly "com.github.MilkBowl:VaultAPI:1.7.1" exclude group: "org.bukkit", module: "bukkit"
 
     paperweight.paperDevBundle("1.21.3-R0.1-SNAPSHOT")
 }
