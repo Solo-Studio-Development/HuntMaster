@@ -44,7 +44,7 @@ public class BountyCreateEvent extends Event implements PlaceholderProvider {
         Map<String, String> placeholders = new HashMap<>();
 
         if (HuntMaster.getDatabase().isSenderIsRandom(target)) {
-            placeholders.put("{sender}", Objects.requireNonNull(ConfigKeys.WEBHOOK_RANDOM_SENDER.getString()));
+            placeholders.put("{sender}", Objects.requireNonNull(ConfigKeys.WEBHOOK_RANDOM_SENDER.getWebhookString()));
             placeholders.put("{target}", Objects.requireNonNull(target.getName()));
             placeholders.put("{reward}", Objects.requireNonNull(String.valueOf(reward)));
             placeholders.put("{rewardType}", Objects.requireNonNull(String.valueOf(rewardType)));

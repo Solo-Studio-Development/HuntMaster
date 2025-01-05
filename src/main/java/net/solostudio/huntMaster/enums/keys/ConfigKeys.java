@@ -57,6 +57,10 @@ public enum ConfigKeys {
         return MessageProcessor.process(HuntMaster.getInstance().getConfiguration().getString(path));
     }
 
+    public String getWebhookString() {
+        return HuntMaster.getInstance().getWebhookFile().getString(path);
+    }
+
     public int getInt() {
         return HuntMaster.getInstance().getConfiguration().getInt(path);
     }

@@ -25,7 +25,7 @@ public class BountyFinderListener implements Listener {
         if (item == null) return;
         if (!item.equals(ItemKeys.BOUNTYFINDER_ITEM.getItem())) return;
 
-        HuntMaster.getScheduler().runTaskTimer(() -> {
+        HuntMaster.getInstance().getScheduler().runTaskTimer(() -> {
             if (player.getInventory().getItemInMainHand().equals(item)) HuntMasterUtils.sendActionBar(player, getNearestBountyInfo(player));
         }, 0, 10);
     }

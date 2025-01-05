@@ -1,0 +1,50 @@
+# ============================================================== #
+# Webhook Configuration Section                                  #
+# ============================================================== #
+
+global-url: "https://bla-bla-bla" # If you want to send everything in one place but don't want to enter the links, you can do it here and then all webhooks will be connected to this link. If you don't want to use this, leave it blank.
+
+webhook:
+  bounty-death-embed:
+    url: "WEBHOOK URL HERE!!!"
+    enabled: false
+    title: "BOUNTY TARGET DEATH"
+    description: "{killer} killed {target} for {reward} {rewardType}"
+    color: "RED"
+    author-name: ""
+    author-url: ""
+    author-icon: ""
+    footer-text: "SENT BY HUNTMASTER"
+    footer-icon: ""
+    thumbnail: ""
+    image: ""
+
+  bounty-create-embed:
+    url: "WEBHOOK URL HERE!!!"
+    enabled: false
+    title: "NEW BOUNTY"
+    description: "{sender} has put a bounty on {target}'s head ({reward} {rewardType})"
+    color: "RED"
+    author-name: ""
+    author-url: ""
+    author-icon: ""
+    footer-text: "SENT BY HUNTMASTER"
+    footer-icon: ""
+    thumbnail: ""
+    image: ""
+
+  bounty-remove-embed:
+    url: "WEBHOOK URL HERE!!!"
+    enabled: false
+    title: "REMOVED BOUNTY"
+    description: "{target}'s bounty has been removed!"
+    color: "RED"
+    author-name: ""
+    author-url: ""
+    author-icon: ""
+    footer-text: "SENT BY HUNTMASTER"
+    footer-icon: ""
+    thumbnail: ""
+    image: ""
+
+  random-sender: "UNKNOWN" # Placeholder for the sender of random bounties

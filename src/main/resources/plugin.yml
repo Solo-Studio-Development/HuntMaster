@@ -7,11 +7,6 @@ description: A powerful and dynamic name that captures the essence of setting bo
 website: https://discord.gg/CxawDwDZtd
 folia-supported: true
 
-dependencies:
-  server:
-    PlaceholderAPI:
-      load: BEFORE
-      required: false
-    Vault:
-      load: BEFORE
-      required: true
+depend: [Vault]
+softdepend: [PlaceholderAPI]
+loadbefore: [PlaceholderAPI, Vault]

@@ -17,7 +17,7 @@ public class BountyScheduler {
     public void startScheduling() {
         if (!ConfigKeys.RANDOM_BOUNTY_ENABLED.getBoolean()) return;
 
-        HuntMaster.getScheduler().runTaskTimer(this::addRandomBounty, 0, ConfigKeys.RANDOM_BOUNTY_PER_SECOND.getInt() * 20L);
+        HuntMaster.getInstance().getScheduler().runTaskTimer(this::addRandomBounty, 0, ConfigKeys.RANDOM_BOUNTY_PER_SECOND.getInt() * 20L);
     }
 
     private void addRandomBounty() {

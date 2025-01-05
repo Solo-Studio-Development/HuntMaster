@@ -47,7 +47,7 @@ public class BountyDeathEvent extends Event implements PlaceholderProvider {
         Map<String, String> placeholders = new HashMap<>();
 
         if (HuntMaster.getDatabase().isSenderIsRandom(target)) {
-            placeholders.put("{killer}", Objects.requireNonNull(ConfigKeys.WEBHOOK_RANDOM_SENDER.getString()));
+            placeholders.put("{killer}", Objects.requireNonNull(ConfigKeys.WEBHOOK_RANDOM_SENDER.getWebhookString()));
             placeholders.put("{target}", Objects.requireNonNull(target.getName()));
             placeholders.put("{reward}", Objects.requireNonNull(String.valueOf(reward)));
             placeholders.put("{rewardType}", Objects.requireNonNull(String.valueOf(rewardType)));

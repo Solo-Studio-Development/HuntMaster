@@ -7,13 +7,13 @@ import net.solostudio.huntMaster.HuntMaster;
 import net.solostudio.huntMaster.enums.RewardTypes;
 import net.solostudio.huntMaster.enums.keys.ConfigKeys;
 import net.solostudio.huntMaster.events.BountyCreateEvent;
+import net.solostudio.huntMaster.interfaces.HuntMasterDatabase;
 import net.solostudio.huntMaster.managers.BountyData;
 import net.solostudio.huntMaster.managers.TopData;
 import net.solostudio.huntMaster.utils.LoggerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.h2.engine.Database;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Getter
-public class H2 extends AbstractDatabase {
+public class H2 implements HuntMasterDatabase {
     private final Connection connection;
     private final HikariDataSource dataSource;
 
@@ -43,6 +43,7 @@ public class H2 extends AbstractDatabase {
         connection = dataSource.getConnection();
     }
 
+    @Override
     public void createTable() {
         String query = "CREATE TABLE IF NOT EXISTS huntmaster (ID INT AUTO_INCREMENT PRIMARY KEY, PLAYER VARCHAR(255) NOT NULL, TARGET VARCHAR(255) NOT NULL, REWARD_TYPE VARCHAR(255) NOT NULL, REWARD INT, BOUNTY_DATE DATETIME, STREAK INT DEFAULT 0)";
 
@@ -75,7 +76,7 @@ public class H2 extends AbstractDatabase {
         String query = "INSERT INTO huntmaster (PLAYER, TARGET, REWARD_TYPE, REWARD, BOUNTY_DATE) VALUES (?, ?, ?, ?, NOW())";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, ConfigKeys.RANDOM_BOUNTY_PLAYER_VALUE.getString());
+            preparedStatement.setString(1, ConfigKeys.RANDOM_BOUNTY_PLAYER_VALUE.getWebhookString());
             preparedStatement.setString(2, target.getName());
             preparedStatement.setString(3, rewardType.name());
             preparedStatement.setInt(4, reward);

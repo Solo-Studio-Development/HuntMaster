@@ -43,12 +43,14 @@ public class Webhook {
     }
 
     public static void sendWebhookFromString(@NotNull String path, @Nullable PlaceholderProvider event) throws IOException, URISyntaxException {
-        ConfigurationSection section = HuntMaster.getInstance().getConfiguration().getSection(path);
+        ConfigurationSection section = HuntMaster.getInstance().getWebhookFile().getSection(path);
 
         if (section == null) return;
 
+        String globalUrl = HuntMaster.getInstance().getWebhookFile().getString("global-url");
         boolean isEnabled = section.getBoolean("enabled", false);
-        String url = section.getString("url");
+        String url = Optional.ofNullable(section.getString("url")).filter(urlStr -> !urlStr.isEmpty()).orElse(globalUrl);
+
         String description = Optional.ofNullable(section.getString("description")).orElse("");
         String color = Optional.ofNullable(section.getString("color")).orElse("BLACK");
         String authorName = Optional.ofNullable(section.getString("author-name")).orElse("");
@@ -87,6 +89,7 @@ public class Webhook {
                         .setAuthor(authorName, authorURL, authorIconURL)
                         .setImage(imageURL)
                 );
+
             } catch (NoSuchFieldException | IllegalAccessException exception) {
                 LoggerUtils.error(exception.getMessage());
 
@@ -102,6 +105,8 @@ public class Webhook {
             }
 
             webhook.execute();
+        } else {
+            LoggerUtils.warn("Webhook is either not enabled or URL is missing.");
         }
     }
 

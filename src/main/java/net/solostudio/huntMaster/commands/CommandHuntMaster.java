@@ -4,7 +4,7 @@ import net.solostudio.huntMaster.HuntMaster;
 import net.solostudio.huntMaster.annotations.Bounties;
 import net.solostudio.huntMaster.annotations.OwnBounties;
 import net.solostudio.huntMaster.annotations.Players;
-import net.solostudio.huntMaster.database.AbstractDatabase;
+import net.solostudio.huntMaster.interfaces.HuntMasterDatabase;
 import net.solostudio.huntMaster.enums.RewardTypes;
 import net.solostudio.huntMaster.enums.keys.ConfigKeys;
 import net.solostudio.huntMaster.enums.keys.ItemKeys;
@@ -79,7 +79,7 @@ public class CommandHuntMaster {
     @CommandPermission("huntmaster.set")
     @Description("Puts a bounty on the target.")
     public void set(@NotNull Player player, @NotNull @Players Player target, RewardTypes rewardType, int reward) {
-        AbstractDatabase databaseManager = HuntMaster.getDatabase();
+        HuntMasterDatabase databaseManager = HuntMaster.getDatabase();
 
         if (!target.isOnline()) {
             player.sendMessage(MessageKeys.PLAYER_NOT_FOUND.getMessage());

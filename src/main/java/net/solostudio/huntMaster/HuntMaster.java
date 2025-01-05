@@ -4,7 +4,9 @@ import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 import lombok.Getter;
 import net.solostudio.huntMaster.config.Config;
-import net.solostudio.huntMaster.database.AbstractDatabase;
+import net.solostudio.huntMaster.database.DatabaseProxy;
+import net.solostudio.huntMaster.hooks.WebhookFile;
+import net.solostudio.huntMaster.interfaces.HuntMasterDatabase;
 import net.solostudio.huntMaster.database.H2;
 import net.solostudio.huntMaster.database.MySQL;
 import net.solostudio.huntMaster.enums.DatabaseTypes;
@@ -14,21 +16,21 @@ import net.solostudio.huntMaster.language.Language;
 import net.solostudio.huntMaster.processor.BountyScheduler;
 import net.solostudio.huntMaster.utils.LoggerUtils;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.plugin.java.JavaPlugin;
 import revxrsal.zapper.ZapperJavaPlugin;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.Objects;
 
-import static net.solostudio.huntMaster.hooks.PlaceholderAPI.registerHook;
+import static net.solostudio.huntMaster.hooks.plugins.PlaceholderAPI.registerHook;
 import static net.solostudio.huntMaster.utils.StartingUtils.*;
 
 public final class HuntMaster extends ZapperJavaPlugin {
     @Getter private static HuntMaster instance;
-    @Getter private static TaskScheduler scheduler;
+    @Getter private static HuntMasterDatabase database;
+    @Getter private TaskScheduler scheduler;
     @Getter private Language language;
-    @Getter private static AbstractDatabase database;
+    @Getter private WebhookFile webhookFile;
     private Config config;
 
     @Override
@@ -42,10 +44,7 @@ public final class HuntMaster extends ZapperJavaPlugin {
         saveDefaultConfig();
         initializeComponents();
         initializeDatabaseManager();
-        registerHook();
         loadBasicFormatOverrides();
-
-        new BountyScheduler().startScheduling();
 
         //  updates
 
@@ -56,6 +55,8 @@ public final class HuntMaster extends ZapperJavaPlugin {
         }
 
         new Metrics(this, 24140);
+        registerHook();
+        new BountyScheduler().startScheduling();
     }
 
     @Override
@@ -72,33 +73,33 @@ public final class HuntMaster extends ZapperJavaPlugin {
 
         saveResourceIfNotExists("locales/messages_en.yml");
         saveResourceIfNotExists("locales/messages_de.yml");
+        saveResourceIfNotExists("config.yml");
+        saveResourceIfNotExists("settings/webhook.yml");
 
         language = new Language("messages_" + LanguageTypes.valueOf(ConfigKeys.LANGUAGE.getString()));
+        webhookFile = new WebhookFile();
     }
 
     private void initializeDatabaseManager() {
         try {
+            HuntMasterDatabase databaseInstance;
             switch (DatabaseTypes.valueOf(ConfigKeys.DATABASE.getString().toUpperCase())) {
                 case MYSQL -> {
-                    LoggerUtils.info("### MySQL support found! Starting to initializing it... ###");
-
-                    database = new MySQL(Objects.requireNonNull(getConfiguration().getSection("database.mysql")));
-                    MySQL mySQL = (MySQL) database;
-
-                    mySQL.createTable();
+                    LoggerUtils.info("### MySQL support found! Starting to initialize it... ###");
+                    databaseInstance = new MySQL(Objects.requireNonNull(getConfiguration().getSection("database.mysql")));
+                    databaseInstance.createTable();
                     LoggerUtils.info("### MySQL database has been successfully initialized! ###");
                 }
                 case H2 -> {
-                    LoggerUtils.info("### H2 support found! Starting to initializing it... ###");
-
-                    database = new H2();
-                    H2 h2 = (H2) database;
-
-                    h2.createTable();
+                    LoggerUtils.info("### H2 support found! Starting to initialize it... ###");
+                    databaseInstance = new H2();
+                    databaseInstance.createTable();
                     LoggerUtils.info("### H2 database has been successfully initialized! ###");
                 }
                 default -> throw new SQLException("Unsupported database type!");
             }
+
+            database = DatabaseProxy.createProxy(HuntMasterDatabase.class, databaseInstance);
         } catch (SQLException | ClassNotFoundException exception) {
             LoggerUtils.error("Database initialization failed: {}", exception.getMessage());
         }

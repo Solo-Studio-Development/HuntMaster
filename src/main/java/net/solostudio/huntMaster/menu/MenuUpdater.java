@@ -15,7 +15,7 @@ public class MenuUpdater {
     public void start(int intervalTicks) {
         if (isRunning()) return;
 
-        task = HuntMaster.getScheduler().runTaskTimer(this::updateMenu, intervalTicks, intervalTicks);
+        task = HuntMaster.getInstance().getScheduler().runTaskTimer(this::updateMenu, intervalTicks, intervalTicks);
     }
 
     public void stop() {

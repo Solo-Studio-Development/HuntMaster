@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/HuntMaster.main.iml" filepath="$PROJECT_DIR$/.idea/modules/HuntMaster.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/HuntMaster.test.iml" filepath="$PROJECT_DIR$/.idea/modules/HuntMaster.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/net.solostudio.HuntMaster.test.iml" filepath="$PROJECT_DIR$/.idea/modules/net.solostudio.HuntMaster.test.iml" />
     </modules>
   </component>
 </project>
