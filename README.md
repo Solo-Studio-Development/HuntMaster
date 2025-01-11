@@ -64,6 +64,7 @@ implementation(files("libs/plugin.jar"))
 - `huntmaster.raise`
 - `huntmaster.takeoff`
 - `huntmaster.bountyfinder`
+- `huntmaster.admin`
 
 ---
 

@@ -4,9 +4,12 @@ import net.solostudio.huntMaster.HuntMaster;
 import net.solostudio.huntMaster.processor.MessageProcessor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public enum ConfigKeys {
     LANGUAGE("language"),
     DATABASE("database.type"),
+    ALIASES("aliases"),
 
     MENU_SIZE("menu.size"),
     BACK_SLOT("menu.back-item.slot"),
@@ -69,7 +72,8 @@ public enum ConfigKeys {
         return HuntMaster.getInstance().getConfiguration().getBoolean(path);
     }
 
-    public long getLong() {
-        return HuntMaster.getInstance().getConfiguration().getYml().getLong(path);
+
+    public List<String> getList() {
+        return HuntMaster.getInstance().getConfiguration().getList(path);
     }
 }

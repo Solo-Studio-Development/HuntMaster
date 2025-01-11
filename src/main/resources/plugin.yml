@@ -1,5 +1,5 @@
 name: HuntMaster
-version: '1.0.0'
+version: '1.0.1'
 main: net.solostudio.huntMaster.HuntMaster
 api-version: '1.20'
 authors: [ Solo Studio ]

@@ -3,6 +3,7 @@ package net.solostudio.huntMaster.managers;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.solostudio.huntMaster.HuntMaster;
 import net.solostudio.huntMaster.processor.MessageProcessor;
 import net.solostudio.huntMaster.utils.LoggerUtils;
 import org.bukkit.configuration.ConfigurationSection;
@@ -12,6 +13,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 @Slf4j
@@ -47,6 +50,7 @@ public class ConfigurationManager {
 
     public void reload() {
         yml = YamlConfiguration.loadConfiguration(config);
+        updateConfigWithDefaults();
 
         save();
     }
@@ -90,5 +94,21 @@ public class ConfigurationManager {
 
     public void setName(@NotNull String name) {
         this.name = name;
+    }
+
+    public void updateConfigWithDefaults() {
+        InputStream defaultConfigStream = HuntMaster.getInstance().getResource(name + ".yml");
+
+        if (defaultConfigStream == null) return;
+
+        YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defaultConfigStream));
+
+        defaultConfig.getKeys(true).forEach(key -> {
+            if (yml.contains(key)) return;
+
+            yml.set(key, defaultConfig.get(key));
+        });
+
+        save();
     }
 }

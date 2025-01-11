@@ -6,6 +6,7 @@ import net.solostudio.huntMaster.enums.keys.MessageKeys;
 import net.solostudio.huntMaster.events.BountyDeathEvent;
 import net.solostudio.huntMaster.hooks.Webhook;
 import net.solostudio.huntMaster.hooks.plugins.Vault;
+import net.solostudio.huntMaster.utils.BossBarUtils;
 import net.solostudio.huntMaster.utils.HuntMasterUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -51,6 +52,7 @@ public class BountyDeathListener implements Listener {
 
                 HuntMasterUtils.setBountyOnDeath(killer, target);
                 HuntMaster.getDatabase().removeBounty(target);
+                BossBarUtils.removeBossBar(target);
 
                 HuntMaster.getInstance().getServer().getPluginManager().callEvent(new BountyDeathEvent(killer, target,
                         HuntMaster.getDatabase().getReward(target),

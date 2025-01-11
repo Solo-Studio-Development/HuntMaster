@@ -11,7 +11,8 @@ import java.util.List;
 public enum MessageKeys {
     NO_PERMISSION("messages.no-permission"),
     RELOAD("messages.reload"),
-    HELP("messages.help"),
+    PLAYER_HELP("messages.player-help"),
+    ADMIN_HELP("messages.admin-help"),
     PLAYER_REQUIRED("messages.player-required"),
 
     FIRST_PAGE("messages.first-page"),
@@ -70,7 +71,8 @@ public enum MessageKeys {
     }
 
     public String getMessage() {
-        return MessageProcessor.process(HuntMaster.getInstance().getLanguage().getString(path));
+        return MessageProcessor.process(HuntMaster.getInstance().getLanguage().getString(path))
+                .replace("%prefix%", MessageProcessor.process(HuntMaster.getInstance().getLanguage().getString("prefix")));
     }
 
     public List<String> getMessages() {

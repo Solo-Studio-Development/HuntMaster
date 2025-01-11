@@ -5,6 +5,7 @@ import net.solostudio.huntMaster.annotations.Bounties;
 import net.solostudio.huntMaster.annotations.OwnBounties;
 import net.solostudio.huntMaster.annotations.Players;
 import net.solostudio.huntMaster.commands.CommandHuntMaster;
+import net.solostudio.huntMaster.enums.keys.ConfigKeys;
 import net.solostudio.huntMaster.exceptions.CommandExceptionHandler;
 import net.solostudio.huntMaster.listeners.BountyDeathListener;
 import net.solostudio.huntMaster.listeners.BountyFinderListener;
@@ -13,6 +14,7 @@ import net.solostudio.huntMaster.managers.BountyData;
 import net.solostudio.huntMaster.menu.MenuListener;
 import org.bukkit.entity.Player;
 import revxrsal.commands.bukkit.BukkitLamp;
+import revxrsal.commands.orphan.Orphans;
 
 import java.util.Objects;
 
@@ -57,7 +59,8 @@ public class RegisterUtils {
 
                         .build();
 
-        lamp.register(new CommandHuntMaster());
+        lamp.register(Orphans.path(ConfigKeys.ALIASES.getList().toArray(String[]::new)).handler(new CommandHuntMaster()));
+
         LoggerUtils.info("### Successfully registered exception handlers... ###");
     }
 }

@@ -1,8 +1,11 @@
 package net.solostudio.huntMaster.listeners;
 
+import net.solostudio.huntMaster.HuntMaster;
 import net.solostudio.huntMaster.events.BountyCreateEvent;
 import net.solostudio.huntMaster.events.BountyRemoveEvent;
 import net.solostudio.huntMaster.hooks.Webhook;
+import net.solostudio.huntMaster.utils.BossBarUtils;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -15,9 +18,12 @@ import static net.solostudio.huntMaster.utils.HuntMasterUtils.*;
 public class GlowingListener implements Listener {
     @EventHandler
     public void onRemove(final BountyRemoveEvent event) throws IOException, URISyntaxException {
-        tryToRemoveGlowing(event.getTarget());
+        Player target = event.getTarget();
+
+        tryToRemoveGlowing(target);
 
         Webhook.sendWebhookFromString("webhook.bounty-remove-embed", event);
+        BossBarUtils.removeBossBar(target);
     }
 
     @EventHandler
@@ -25,11 +31,15 @@ public class GlowingListener implements Listener {
         if (!isFolia) tryToSetGlowing(event.getTarget());
 
         Webhook.sendWebhookFromString("webhook.bounty-create-embed", event);
+        BossBarUtils.startDistanceTracking(event.getSender(), event.getTarget());
     }
 
     @EventHandler
     public void onJoin(final PlayerJoinEvent event) {
-        tryToSetGlowing(event.getPlayer());
+        Player player = event.getPlayer();
+
+        if (!isFolia) tryToSetGlowing(player);
+        if (HuntMaster.getDatabase().isBounty(player)) BossBarUtils.startDistanceTracking(HuntMaster.getDatabase().getSender(player), player);
     }
 
     @EventHandler

@@ -152,3 +152,24 @@ feature:
   bountyfinder:
     no-bounty-nearby: "&cNo bounties nearby" # Message when no bounty is nearby
     nearest-bounty: "&a{bounty} &8| &a{distance}m" # Message for the nearest bounty
+
+  distance-tracker:
+    enabled: false
+    title: "&fHunter's position"
+    style: "SOLID"
+    flags: []
+    colors:
+      25: "RED"
+      50: "YELLOW"
+      100: "GREEN"
+
+######################################################################
+# +---------------------------------------------------------------+ #
+# |                       Command Setting                         | #
+# +---------------------------------------------------------------+ #
+#####################################################################
+
+aliases:
+  - "huntmaster"
+  - "bounty"
+  - "hm"

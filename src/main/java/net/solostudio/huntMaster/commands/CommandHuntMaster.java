@@ -21,21 +21,21 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
+import revxrsal.commands.orphan.OrphanCommand;
 
 import static net.solostudio.huntMaster.utils.HuntMasterUtils.handleLevelReward;
 import static net.solostudio.huntMaster.utils.HuntMasterUtils.handleMoneyReward;
 
 @SuppressWarnings("deprecation")
-@Command({"bounty", "huntmaster"})
-public class CommandHuntMaster {
+public class CommandHuntMaster implements OrphanCommand {
     @CommandPlaceholder
-    public void defaultCommand(@NotNull CommandSender sender) {
-        help(sender);
-    }
-
     @Subcommand("help")
     public void help(@NotNull CommandSender sender) {
-        MessageKeys.HELP
+        if (sender.hasPermission("huntmaster.admin")) {
+            MessageKeys.ADMIN_HELP
+                    .getMessages()
+                    .forEach(sender::sendMessage);
+        } else MessageKeys.PLAYER_HELP
                 .getMessages()
                 .forEach(sender::sendMessage);
     }

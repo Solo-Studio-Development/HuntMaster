@@ -105,8 +105,6 @@ public class Webhook {
             }
 
             webhook.execute();
-        } else {
-            LoggerUtils.warn("Webhook is either not enabled or URL is missing.");
         }
     }
 
