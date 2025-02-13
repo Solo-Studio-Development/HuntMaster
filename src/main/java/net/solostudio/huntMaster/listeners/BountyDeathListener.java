@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -21,7 +22,7 @@ import static net.solostudio.huntMaster.utils.HuntMasterUtils.tryToRemoveGlowing
 
 public class BountyDeathListener implements Listener {
     @EventHandler
-    public void onDeath(final PlayerDeathEvent event) {
+    public void onDeath(final @NotNull PlayerDeathEvent event) {
         Player target = event.getEntity();
         Player killer = target.getKiller();
 

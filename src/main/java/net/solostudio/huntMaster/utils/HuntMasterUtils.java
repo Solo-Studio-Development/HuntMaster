@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -60,7 +61,7 @@ public class HuntMasterUtils {
         return false;
     }
 
-    public static NamedTextColor getNamedTextColor(@NotNull String colorName) {
+    public static @Nullable NamedTextColor getNamedTextColor(@NotNull String colorName) {
         return switch (colorName) {
             case "BLACK", "black" -> NamedTextColor.namedColor(0);
             case "DARK_BLUE", "dark_blue" -> NamedTextColor.namedColor(170);

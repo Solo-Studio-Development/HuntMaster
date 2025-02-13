@@ -10,6 +10,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -17,7 +19,7 @@ import static net.solostudio.huntMaster.utils.HuntMasterUtils.*;
 
 public class GlowingListener implements Listener {
     @EventHandler
-    public void onRemove(final BountyRemoveEvent event) throws IOException, URISyntaxException {
+    public void onRemove(final @NotNull BountyRemoveEvent event) throws IOException, URISyntaxException {
         Player target = event.getTarget();
 
         tryToRemoveGlowing(target);
@@ -35,7 +37,7 @@ public class GlowingListener implements Listener {
     }
 
     @EventHandler
-    public void onJoin(final PlayerJoinEvent event) {
+    public void onJoin(final @NotNull PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
         if (!isFolia) tryToSetGlowing(player);
@@ -43,7 +45,7 @@ public class GlowingListener implements Listener {
     }
 
     @EventHandler
-    public void onRespawn(final PlayerRespawnEvent event) {
+    public void onRespawn(final @NotNull PlayerRespawnEvent event) {
         tryToSetGlowing(event.getPlayer());
     }
 }

@@ -48,7 +48,9 @@ public enum ConfigKeys {
     GLOWING_ENABLED("feature.glowing.enabled"),
     GLOWING_COLOR("feature.glowing.color"),
 
-    WEBHOOK_RANDOM_SENDER("webhook.random-sender");
+    WEBHOOK_RANDOM_SENDER("webhook.random-sender"),
+
+    DISTANCE_ENABLED("feature.distance-tracker.enabled");
 
     private final String path;
 

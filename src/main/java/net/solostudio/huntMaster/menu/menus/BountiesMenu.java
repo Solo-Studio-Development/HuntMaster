@@ -47,7 +47,7 @@ public class BountiesMenu extends PaginatedMenu {
     }
 
     @Override
-    public void handleMenu(final InventoryClickEvent event) {
+    public void handleMenu(final @NotNull InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         if (!event.getInventory().equals(inventory)) return;
 
@@ -55,28 +55,6 @@ public class BountiesMenu extends PaginatedMenu {
 
         int clickedSlot = event.getSlot();
         List<BountyData> bounties = HuntMaster.getDatabase().getBounties();
-
-        if (event.getSlot() == ConfigKeys.FORWARD_SLOT.getInt()) {
-            int nextPageIndex = page + 1;
-            int totalPages = (int) Math.ceil((double) HuntMaster.getDatabase().getBounties().size() / getMaxItemsPerPage());
-
-            if (nextPageIndex >= totalPages) {
-                player.sendMessage(MessageKeys.LAST_PAGE.getMessage());
-                return;
-            } else {
-                page++;
-                super.open();
-            }
-        }
-
-        if (event.getSlot() == ConfigKeys.BACK_SLOT.getInt()) {
-            if (page == 0) {
-                player.sendMessage(MessageKeys.FIRST_PAGE.getMessage());
-            } else {
-                page--;
-                super.open();
-            }
-        }
 
         if (clickedSlot == ConfigKeys.FORWARD_SLOT.getInt()) handlePageChange(player, bounties.size(), true);
         else if (clickedSlot == ConfigKeys.BACK_SLOT.getInt()) handlePageChange(player, bounties.size(), false);
@@ -98,11 +76,11 @@ public class BountiesMenu extends PaginatedMenu {
     }
 
     @EventHandler
-    public void onClose(final InventoryCloseEvent event) {
+    public void onClose(final @NotNull InventoryCloseEvent event) {
         if (event.getInventory().equals(inventory)) close();
     }
 
-    private ItemStack createBountyItem(@NotNull BountyData bounty) {
+    private @NotNull ItemStack createBountyItem(@NotNull BountyData bounty) {
         ItemStack itemStack = ItemFactory.createItemFromString("bounty-item");
         ItemMeta meta = itemStack.getItemMeta();
 

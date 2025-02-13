@@ -7,6 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -15,23 +16,28 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 public interface ItemFactory {
-    static ItemFactory create(@NotNull Material material) {
+    @Contract("_ -> new")
+    static @NotNull ItemFactory create(@NotNull Material material) {
         return new ItemBuilder(material);
     }
 
-    static ItemFactory create(@NotNull Material material, int count) {
+    @Contract("_, _ -> new")
+    static @NotNull ItemFactory create(@NotNull Material material, int count) {
         return new ItemBuilder(material, count);
     }
 
-    static ItemFactory create(@NotNull Material material, int count, short damage) {
+    @Contract("_, _, _ -> new")
+    static @NotNull ItemFactory create(@NotNull Material material, int count, short damage) {
         return new ItemBuilder(material, count, damage);
     }
 
-    static ItemFactory create(@NotNull Material material, int count, short damage, byte data) {
+    @Contract("_, _, _, _ -> new")
+    static @NotNull ItemFactory create(@NotNull Material material, int count, short damage, byte data) {
         return new ItemBuilder(material, count, damage, data);
     }
 
-    static ItemFactory create(ItemStack item) {
+    @Contract("_ -> new")
+    static @NotNull ItemFactory create(ItemStack item) {
         return new ItemBuilder(item);
     }
 
@@ -43,7 +49,7 @@ public interface ItemFactory {
 
     void addEnchantment(@NotNull Enchantment enchantment, int level);
 
-    default ItemFactory addEnchantments(Map<Enchantment, Integer> enchantments) {
+    default ItemFactory addEnchantments(@NotNull Map<Enchantment, Integer> enchantments) {
         enchantments.forEach(this::addEnchantment);
 
         return this;

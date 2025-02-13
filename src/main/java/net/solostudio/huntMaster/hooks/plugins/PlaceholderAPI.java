@@ -62,7 +62,7 @@ public class PlaceholderAPI {
             };
         }
 
-        private String getBountyStatus(@NotNull Player player) {
+        private @NotNull String getBountyStatus(@NotNull Player player) {
             return HuntMaster.getDatabase().isBounty(player)
                     ? ConfigKeys.YES.getString()
                     : ConfigKeys.NO.getString();

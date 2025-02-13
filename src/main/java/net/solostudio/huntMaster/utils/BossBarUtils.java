@@ -3,6 +3,7 @@ package net.solostudio.huntMaster.utils;
 import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import lombok.experimental.UtilityClass;
 import net.solostudio.huntMaster.HuntMaster;
+import net.solostudio.huntMaster.enums.keys.ConfigKeys;
 import net.solostudio.huntMaster.managers.DistanceColor;
 import net.solostudio.huntMaster.processor.MessageProcessor;
 import org.bukkit.Bukkit;
@@ -11,6 +12,7 @@ import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -27,8 +29,6 @@ public class BossBarUtils {
 
     public static void createBossBar(@NotNull Player player, @NotNull String path) {
         var config = HuntMaster.getInstance().getConfiguration();
-
-        if (!config.getBoolean(path + ".enabled")) return;
 
         var rawTitle = MessageProcessor.process(config.getString(path + ".title"));
         var style = BarStyle.valueOf(config.getString(path + ".style").toUpperCase());
@@ -73,6 +73,8 @@ public class BossBarUtils {
     }
 
     public static void startDistanceTracking(@NotNull Player hunter, @NotNull Player target) {
+        if (!ConfigKeys.DISTANCE_ENABLED.getBoolean()) return;
+
         List<DistanceColor> distanceColors = loadDistanceColors();
 
         trackingTask = HuntMaster.getInstance().getScheduler().runTaskTimer(() -> {
@@ -84,15 +86,13 @@ public class BossBarUtils {
             double distance = hunter.getLocation().distance(target.getLocation());
             var colorKey = getColorKey(distanceColors, distance);
 
-            if (!activeBossBars.containsKey(target)) {
-                createBossBar(target, "feature.distance-tracker");
-            }
-
+            if (!activeBossBars.containsKey(target)) createBossBar(target, "feature.distance-tracker");
             activeBossBars.get(target).setColor(BarColor.valueOf(colorKey.toUpperCase()));
         }, 0, 20);
     }
 
-    private static String getColorKey(List<DistanceColor> distanceColors, double distance) {
+    @Contract("_, _ -> !null")
+    private static String getColorKey(@NotNull List<DistanceColor> distanceColors, double distance) {
         return distanceColors.stream()
                 .filter(dc -> distance < dc.distance())
                 .map(DistanceColor::color)

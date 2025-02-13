@@ -7,6 +7,7 @@ import net.solostudio.huntMaster.HuntMaster;
 import net.solostudio.huntMaster.interfaces.PlaceholderProvider;
 import net.solostudio.huntMaster.utils.LoggerUtils;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
@@ -300,7 +301,7 @@ public class Webhook {
         }
 
         @Override
-        public String toString() {
+        public @NotNull String toString() {
             return "{" + map
                     .entrySet()
                     .stream()
@@ -317,19 +318,20 @@ public class Webhook {
             return String.valueOf(value);
         }
 
-        private String quote(@NotNull String string) {
+        @Contract(pure = true)
+        private @NotNull String quote(@NotNull String string) {
             return "\"" + string
                     .replace("\"", "\\\"") + "\"";
         }
 
-        private String arrayToString(@NotNull Object[] array) {
+        private @NotNull String arrayToString(@NotNull Object[] array) {
             return "[" + Arrays
                     .stream(array)
                     .map(element -> element instanceof String ? quote((String) element) : String.valueOf(element))
                     .collect(Collectors.joining(", ")) + "]";
         }
 
-        private String listToString(@NotNull List<?> list) {
+        private @NotNull String listToString(@NotNull List<?> list) {
             return "[" + list
                     .stream()
                     .map(element -> element instanceof String ? quote((String) element) : String.valueOf(element))

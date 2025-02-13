@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public class BountyFinderListener implements Listener {
     @EventHandler
-    public void onPlayerItemHeld(final PlayerItemHeldEvent event) {
+    public void onPlayerItemHeld(final @NotNull PlayerItemHeldEvent event) {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItem(event.getNewSlot());
 
